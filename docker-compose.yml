@@ -1,0 +1,83 @@
+services:
+  # ==============================================
+  # PostgreSQL
+  # ==============================================
+  pgsql:
+    image: postgres:17-alpine
+    container_name: dolanan-pgsql
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    ports:
+      - '${DB_PORT:-5432}:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dolanan-net
+
+  # ==============================================
+  # API (NestJS + Fastify)
+  # ==============================================
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: dolanan-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      pgsql:
+        condition: service_healthy
+    expose:
+      - '3000'
+    networks:
+      - dolanan-net
+
+  # ==============================================
+  # Web (Next.js - placeholder, akan dibuat nanti)
+  # ==============================================
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: dolanan-web
+    restart: unless-stopped
+    env_file:
+      - .env
+    expose:
+      - '3001'
+    networks:
+      - dolanan-net
+    profiles:
+      - full
+
+  # ==============================================
+  # Nginx (Reverse Proxy)
+  # ==============================================
+  nginx:
+    image: nginx:alpine
+    container_name: dolanan-nginx
+    restart: unless-stopped
+    ports:
+      - '${NGINX_PORT:-8080}:80'
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+    networks:
+      - dolanan-net
+
+volumes:
+  pgdata:
+
+networks:
+  dolanan-net:
+    driver: bridge
