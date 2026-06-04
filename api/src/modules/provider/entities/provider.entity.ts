@@ -22,15 +22,6 @@ export class Provider {
     @Column()
     name: string;
 
-    @Column({ type: 'text', nullable: true })
-    apiKey: string;
-
-    @Column({ type: 'text', nullable: true })
-    secretKey: string;
-
-    @Column({ nullable: true })
-    merchantCode: string;
-
     @Column({ default: true })
     isActive: boolean;
 

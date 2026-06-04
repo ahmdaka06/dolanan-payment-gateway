@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { TransactionStatus } from '../../../common/enums/transaction-status.enum';
 import { Provider } from '../../provider/entities/provider.entity';
+import { ProviderAccount } from '../../provider-account/entities/provider-account.entity';
 import { PaymentChannel } from '../../payment-channel/entities/payment-channel.entity';
 
 @Entity('transactions')
@@ -30,6 +31,13 @@ export class Transaction {
 
     @Column({ name: 'provider_id' })
     providerId: string;
+
+    @ManyToOne(() => ProviderAccount)
+    @JoinColumn({ name: 'provider_account_id' })
+    providerAccount: ProviderAccount;
+
+    @Column({ name: 'provider_account_id' })
+    providerAccountId: string;
 
     @ManyToOne(() => PaymentChannel)
     @JoinColumn({ name: 'payment_channel_id' })

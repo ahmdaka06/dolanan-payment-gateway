@@ -4,7 +4,7 @@ import { ProviderRequest } from '../../types/provider-request.type';
 import { ProviderResponse } from '../../types/provider-response.type';
 
 export class DuitkuMapper {
-    static toProviderRequest(data: CreatePaymentData): ProviderRequest {
+    static toProviderRequest(data: CreatePaymentData, merchantCode: string): ProviderRequest {
         return {
             method: 'POST',
             endpoint: '/api/merchant/transaction/create',
@@ -12,7 +12,7 @@ export class DuitkuMapper {
                 'Content-Type': 'application/json',
             },
             body: {
-                merchantCode: process.env.DUITKU_MERCHANT_CODE,
+                merchantCode,
                 paymentAmount: data.amount,
                 merchantOrderId: data.invoiceNo,
                 productDetails: data.description || 'Payment',

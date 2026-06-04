@@ -1,7 +1,7 @@
 export const PAYMENT_PROVIDERS = {
-    TRIPAY: 'tripay',
-    DUITKU: 'duitku',
-    PAYDISINI: 'paydisini',
+    TRIPAY: 'TRIPAY',
+    DUITKU: 'DUITKU',
+    PAYDISINI: 'PAYDISINI',
 } as const;
 
 export const PAYMENT_METHODS = {

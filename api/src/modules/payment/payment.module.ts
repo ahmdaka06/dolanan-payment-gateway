@@ -8,8 +8,11 @@ import { DuitkuClient } from './providers/duitku/duitku.client';
 import { DuitkuProvider } from './providers/duitku/duitku.provider';
 import { PaydisiniClient } from './providers/paydisini/paydisini.client';
 import { PaydisiniProvider } from './providers/paydisini/paydisini.provider';
+import { ProviderAccountModule } from '../provider-account/provider-account.module';
+import { ProviderModule } from '../provider/provider.module';
 
 @Module({
+    imports: [ProviderAccountModule, ProviderModule],
     controllers: [PaymentController],
     providers: [
         PaymentService,

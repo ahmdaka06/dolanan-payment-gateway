@@ -8,6 +8,7 @@ import {
     Index,
 } from 'typeorm';
 import { Provider } from '../../provider/entities/provider.entity';
+import { ProviderAccount } from '../../provider-account/entities/provider-account.entity';
 
 @Entity('provider_logs')
 @Index('IDX_provider_logs_provider_id', ['providerId'])
@@ -20,8 +21,15 @@ export class ProviderLog {
     @JoinColumn({ name: 'provider_id' })
     provider: Provider;
 
-    @Column({ name: 'provider_id' })
+    @Column({ name: 'provider_id', nullable: true })
     providerId: string;
+
+    @ManyToOne(() => ProviderAccount)
+    @JoinColumn({ name: 'provider_account_id' })
+    providerAccount: ProviderAccount;
+
+    @Column({ name: 'provider_account_id', nullable: true })
+    providerAccountId: string;
 
     @Column()
     endpoint: string;

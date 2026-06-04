@@ -4,7 +4,7 @@ import { ProviderRequest } from '../../types/provider-request.type';
 import { ProviderResponse } from '../../types/provider-response.type';
 
 export class PaydisiniMapper {
-    static toProviderRequest(data: CreatePaymentData): ProviderRequest {
+    static toProviderRequest(data: CreatePaymentData, apiKey: string): ProviderRequest {
         return {
             method: 'POST',
             endpoint: '/api/v1/transaction/create',
@@ -12,7 +12,7 @@ export class PaydisiniMapper {
                 'Content-Type': 'application/json',
             },
             body: {
-                key: process.env.PAYDISINI_API_KEY,
+                key: apiKey,
                 request: data.invoiceNo,
                 amount: data.amount,
                 description: data.description || 'Payment',

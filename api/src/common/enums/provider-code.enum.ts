@@ -1,5 +1,5 @@
 export enum ProviderCode {
-    TRIPAY = 'tripay',
-    DUITKU = 'duitku',
-    PAYDISINI = 'paydisini',
+    TRIPAY = 'TRIPAY',
+    DUITKU = 'DUITKU',
+    PAYDISINI = 'PAYDISINI',
 }

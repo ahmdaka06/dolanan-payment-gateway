@@ -1,7 +1,5 @@
 services:
-  # ==============================================
   # PostgreSQL
-  # ==============================================
   pgsql:
     image: postgres:17-alpine
     container_name: dolanan-pgsql
@@ -13,18 +11,34 @@ services:
     ports:
       - '${DB_PORT:-5432}:5432'
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}']
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - dolanan-net
+      - app_network
 
-  # ==============================================
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: dolanan-redis
+    restart: unless-stopped
+    command: redis-server --save 60 1 --loglevel warning ${REDIS_PASSWORD:+--requirepass $REDIS_PASSWORD}
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - app_network
+
   # API (NestJS + Fastify)
-  # ==============================================
   api:
     build:
       context: ./api
@@ -36,14 +50,14 @@ services:
     depends_on:
       pgsql:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     expose:
       - '3000'
     networks:
-      - dolanan-net
+      - app_network
 
-  # ==============================================
   # Web (Next.js - placeholder, akan dibuat nanti)
-  # ==============================================
   web:
     build:
       context: ./web
@@ -55,13 +69,11 @@ services:
     expose:
       - '3001'
     networks:
-      - dolanan-net
+      - app_network
     profiles:
       - full
 
-  # ==============================================
   # Nginx (Reverse Proxy)
-  # ==============================================
   nginx:
     image: nginx:alpine
     container_name: dolanan-nginx
@@ -73,11 +85,12 @@ services:
     depends_on:
       - api
     networks:
-      - dolanan-net
+      - app_network
 
 volumes:
-  pgdata:
+  pg_data:
+  redis_data:
 
 networks:
-  dolanan-net:
+  app_network:
     driver: bridge
