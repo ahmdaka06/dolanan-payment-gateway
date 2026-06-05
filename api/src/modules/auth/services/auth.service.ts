@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { randomUUID } from 'node:crypto';
 import { JwtService } from '@nestjs/jwt';
@@ -12,8 +12,11 @@ import {
 } from '../types/jwt-payload.type';
 import { LoginDto } from '../dto/payload/login.dto';
 import { AuthResponse } from '../dto/response/auth-response.dto';
-import { AuthInvalidCredentialsException } from 'src/common/exceptions';
-import { ERROR_CODE } from 'src/common/constants/error-code.constant';
+import {
+    AuthInvalidCredentialsException,
+    AuthUnauthorizedException,
+    UserNotFoundException,
+} from 'src/common/exceptions';
 
 @Injectable()
 export class AuthService {
@@ -31,13 +34,13 @@ export class AuthService {
         const user = await this.authRepository.findUserByEmail(email);
 
         if (!user) {
-            throw new AuthInvalidCredentialsException;
+            throw new AuthInvalidCredentialsException();
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
-            throw new AuthInvalidCredentialsException;
+            throw new AuthInvalidCredentialsException();
         }
 
         return this.generateTokenPair({ id: user.id, email: user.email });
@@ -51,7 +54,7 @@ export class AuthService {
         const user = await this.authRepository.findUserById(payload.sub);
 
         if (!user) {
-            throw new UnauthorizedException(ERROR_CODE.AUTH_USER_NOT_FOUND);
+            throw new UserNotFoundException(payload.sub);
         }
 
         return this.generateTokenPair({ id: user.id, email: user.email });
@@ -109,13 +112,13 @@ export class AuthService {
         const payload = await this.jwtService.verifyAsync<RefreshTokenPayload>(token, {
             secret: this.config.jwtRefreshSecret,
         }).catch(() => {
-            throw new UnauthorizedException(ERROR_CODE.AUTH_REFRESH_TOKEN_INVALID);
+            throw new AuthUnauthorizedException('Invalid refresh token');
         });
 
         const stored = await this.authRepository.findRefreshTokenById(payload.jti);
 
         if (!stored) {
-            throw new UnauthorizedException(ERROR_CODE.AUTH_REFRESH_TOKEN_REVOKED);
+            throw new AuthUnauthorizedException('Refresh token revoked');
         }
 
         return payload;

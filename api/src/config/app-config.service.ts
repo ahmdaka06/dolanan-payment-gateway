@@ -84,7 +84,7 @@ export class AppConfigService {
     return this.config.get<string>('JWT_REFRESH_EXPIRES_IN') ?? '7d';
   }
 
-  // Throttle
+  // Throttle — Global rate limit (100 req/menit)
   get throttleTtl(): number {
     return Number(this.config.get<string>('THROTTLE_TTL') ?? 60000);
   }

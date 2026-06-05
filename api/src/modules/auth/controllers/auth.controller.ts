@@ -5,7 +5,7 @@ import { LoginDto } from '../dto/payload/login.dto';
 import { RefreshTokenDto } from '../dto/payload/refresh-token.dto';
 import { AuthResponse } from '../dto/response/auth-response.dto';
 import { Public } from '../../../common/decorators/public.decorator';
-import { Throttle } from '@nestjs/throttler';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { ResponseDto } from 'src/common/dto/response/api-response.dto';
 
 @ApiTags('Auth')
@@ -19,7 +19,7 @@ export class AuthController {
     @ApiOkResponse({ description: 'Login success', type: ResponseDto(AuthResponse) })
     @ApiOperation({ summary: 'Login with email and password' })
     @HttpCode(HttpStatus.OK)
-    @Throttle({ default: { limit: 10, ttl: 60000 } })
+    @Throttle({ default: { limit: 5, ttl: 60000 } })
     async login(@Body() dto: LoginDto) {
         return this.authService.login(dto);
     }
@@ -30,6 +30,7 @@ export class AuthController {
     @ApiOkResponse({ description: 'Refresh token success', type: AuthResponse })
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Refresh access token' })
+    @Throttle({ default: { limit: 10, ttl: 60000 } })
     async refresh(@Body() dto: RefreshTokenDto) {
         return this.authService.refresh(dto.refreshToken);
     }
@@ -40,6 +41,7 @@ export class AuthController {
     @HttpCode(HttpStatus.NO_CONTENT)
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Logout and revoke refresh token' })
+    @SkipThrottle()
     async logout(@Body() dto: RefreshTokenDto) {
         return this.authService.logout(dto.refreshToken);
     }

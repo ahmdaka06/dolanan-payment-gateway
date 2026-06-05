@@ -40,13 +40,10 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     ThrottlerModule.forRootAsync({
       imports: [RedisModule, AppConfigModule],
       inject: ['REDIS_CLIENT', AppConfigService],
-      useFactory: (redisClient: Redis, config: AppConfigService) => {
-        const { ttl, limit } = throttlerConfig(config);
-        return {
-          throttlers: [{ ttl, limit }],
-          storage: new RedisThrottlerStorage(redisClient),
-        };
-      },
+      useFactory: (redisClient: Redis, config: AppConfigService) => ({
+        throttlers: [throttlerConfig(config)],
+        storage: new RedisThrottlerStorage(redisClient),
+      }),
     }),
 
     LoggerModule,
