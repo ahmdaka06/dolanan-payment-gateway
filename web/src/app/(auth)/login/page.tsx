@@ -1,12 +1,15 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LockKeyhole, LoaderCircle, User } from "lucide-react";
+import { LockKeyhole, LoaderCircle, ShieldCheck, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username wajib diisi."),
@@ -68,115 +71,102 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f6f7f9] text-zinc-950">
-      <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-center px-5 py-10 sm:px-8 lg:px-10">
-        <div className="grid gap-8 lg:grid-cols-[1fr_440px] lg:items-center">
-          <section className="max-w-2xl">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">
-              Admin Dashboard
-            </p>
-            <h1 className="text-4xl font-semibold tracking-normal text-zinc-950 sm:text-5xl">
-              Dolanan Payment Gateway
-            </h1>
-            <p className="mt-5 max-w-xl text-base leading-7 text-zinc-600">
-              Kelola provider, channel pembayaran, dan transaksi dari satu
-              panel operasional yang ringkas.
-            </p>
-          </section>
+    <main className="min-h-screen bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
+      <div className="absolute right-4 top-4 sm:right-6 sm:top-6">
+        <ThemeToggle />
+      </div>
 
-          <section className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm sm:p-8">
-            <div className="mb-7">
-              <h2 className="text-2xl font-semibold tracking-normal">
-                Masuk
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-zinc-600">
-                Gunakan akun admin untuk mengakses dashboard.
-              </p>
+      <div className="mx-auto grid min-h-screen w-full max-w-6xl items-center gap-8 px-5 py-20 sm:px-8 lg:grid-cols-[1fr_440px] lg:px-10">
+        <section className="mx-auto max-w-2xl text-center lg:mx-0 lg:text-left">
+          <div className="mx-auto mb-6 flex size-14 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-sm dark:bg-emerald-400 dark:text-zinc-950 lg:mx-0">
+            <ShieldCheck className="size-7" />
+          </div>
+          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-400">
+            Admin Dashboard
+          </p>
+          <h1 className="text-4xl font-semibold tracking-normal text-zinc-950 dark:text-zinc-50 sm:text-5xl">
+            Dolanan Payment Gateway
+          </h1>
+          <p className="mt-5 max-w-xl text-base leading-7 text-zinc-600 dark:text-zinc-400 lg:max-w-lg">
+            Panel operasional untuk mengelola provider, channel pembayaran,
+            pembuatan payment, dan monitoring transaksi.
+          </p>
+        </section>
+
+        <Card className="mx-auto w-full max-w-md p-6 sm:p-8">
+          <div className="mb-7">
+            <h2 className="text-2xl font-semibold tracking-normal text-zinc-950 dark:text-zinc-50">
+              Masuk
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+              Gunakan akun admin untuk mengakses dashboard.
+            </p>
+          </div>
+
+          <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+            <div>
+              <label
+                className="mb-2 block text-sm font-medium text-zinc-800 dark:text-zinc-200"
+                htmlFor="username"
+              >
+                Username
+              </label>
+              <div className="relative">
+                <User className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500" />
+                <Input
+                  autoComplete="username"
+                  className="pl-9"
+                  id="username"
+                  isInvalid={Boolean(errors.username)}
+                  placeholder="admin"
+                  {...register("username")}
+                />
+              </div>
+              {errors.username ? (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                  {errors.username.message}
+                </p>
+              ) : null}
             </div>
 
-            <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-              <div>
-                <label
-                  className="mb-2 block text-sm font-medium text-zinc-800"
-                  htmlFor="username"
-                >
-                  Username
-                </label>
-                <div
-                  className={cn(
-                    "flex h-11 items-center gap-3 rounded-md border bg-white px-3 transition-colors",
-                    errors.username
-                      ? "border-red-400"
-                      : "border-zinc-300 focus-within:border-emerald-600",
-                  )}
-                >
-                  <User className="size-4 shrink-0 text-zinc-500" />
-                  <input
-                    id="username"
-                    autoComplete="username"
-                    className="h-full min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-zinc-400"
-                    placeholder="admin"
-                    {...register("username")}
-                  />
-                </div>
-                {errors.username ? (
-                  <p className="mt-2 text-sm text-red-600">
-                    {errors.username.message}
-                  </p>
-                ) : null}
-              </div>
-
-              <div>
-                <label
-                  className="mb-2 block text-sm font-medium text-zinc-800"
-                  htmlFor="password"
-                >
-                  Password
-                </label>
-                <div
-                  className={cn(
-                    "flex h-11 items-center gap-3 rounded-md border bg-white px-3 transition-colors",
-                    errors.password
-                      ? "border-red-400"
-                      : "border-zinc-300 focus-within:border-emerald-600",
-                  )}
-                >
-                  <LockKeyhole className="size-4 shrink-0 text-zinc-500" />
-                  <input
-                    id="password"
-                    type="password"
-                    autoComplete="current-password"
-                    className="h-full min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-zinc-400"
-                    placeholder="Masukkan password"
-                    {...register("password")}
-                  />
-                </div>
-                {errors.password ? (
-                  <p className="mt-2 text-sm text-red-600">
-                    {errors.password.message}
-                  </p>
-                ) : null}
-              </div>
-
-              {submitError ? (
-                <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-700">
-                  {submitError}
-                </div>
-              ) : null}
-
-              <button
-                className="flex h-11 w-full items-center justify-center gap-2 rounded-md bg-emerald-700 px-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-70"
-                disabled={isSubmitting}
-                type="submit"
+            <div>
+              <label
+                className="mb-2 block text-sm font-medium text-zinc-800 dark:text-zinc-200"
+                htmlFor="password"
               >
-                {isSubmitting ? (
-                  <LoaderCircle className="size-4 animate-spin" />
-                ) : null}
-                {isSubmitting ? "Memproses..." : "Masuk ke Dashboard"}
-              </button>
-            </form>
-          </section>
-        </div>
+                Password
+              </label>
+              <div className="relative">
+                <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500" />
+                <Input
+                  autoComplete="current-password"
+                  className="pl-9"
+                  id="password"
+                  isInvalid={Boolean(errors.password)}
+                  placeholder="Masukkan password"
+                  type="password"
+                  {...register("password")}
+                />
+              </div>
+              {errors.password ? (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                  {errors.password.message}
+                </p>
+              ) : null}
+            </div>
+
+            {submitError ? (
+              <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
+                {submitError}
+              </div>
+            ) : null}
+
+            <Button className="h-11 w-full" disabled={isSubmitting} type="submit">
+              {isSubmitting ? <LoaderCircle className="size-4 animate-spin" /> : null}
+              {isSubmitting ? "Memproses..." : "Masuk ke Dashboard"}
+            </Button>
+          </form>
+        </Card>
       </div>
     </main>
   );
