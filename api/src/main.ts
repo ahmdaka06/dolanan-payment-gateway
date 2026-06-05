@@ -5,14 +5,16 @@ import {
     NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
+import { AppConfigService } from './config/app-config.service';
 import { setupSwagger } from './config/swagger/swagger.config';
-import { appConfig } from './config/app.config';
 
 async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(
         AppModule,
         new FastifyAdapter(),
     );
+
+    const config = app.get(AppConfigService);
 
     app.enableCors({
         origin: (origin: any, callback: any) => {
@@ -32,7 +34,7 @@ async function bootstrap() {
         allowedHeaders: ['Content-Type', 'Authorization'],
     });
 
-    app.setGlobalPrefix(appConfig().prefix);
+    app.setGlobalPrefix(config.apiPrefix);
     setupSwagger(app);
 
     app.useGlobalPipes(
@@ -43,7 +45,7 @@ async function bootstrap() {
         }),
     );
 
-    await app.listen(appConfig().port, '0.0.0.0');
+    await app.listen(config.port, '0.0.0.0');
 }
 
 bootstrap();

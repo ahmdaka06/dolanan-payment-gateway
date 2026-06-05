@@ -6,7 +6,17 @@ export function setupSwagger(app: INestApplication) {
         .setTitle('Payment Gateway API')
         .setDescription('Payment Gateway Aggregator')
         .setVersion('1.0')
-        .addBearerAuth()
+        .addBearerAuth(
+            {
+              type: 'http',
+              scheme: 'bearer',
+              bearerFormat: 'JWT',
+              name: 'Authorization',
+              description: 'Enter JWT access token',
+              in: 'header',
+            },
+            'JWT-auth',
+        )
         .build();
 
     const document = SwaggerModule.createDocument(app, config);

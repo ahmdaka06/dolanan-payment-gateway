@@ -10,9 +10,10 @@ import { PaydisiniClient } from './providers/paydisini/paydisini.client';
 import { PaydisiniProvider } from './providers/paydisini/paydisini.provider';
 import { ProviderAccountModule } from '../provider-account/provider-account.module';
 import { ProviderModule } from '../provider/provider.module';
+import { AppConfigModule } from '../../config/app-config.module';
 
 @Module({
-    imports: [ProviderAccountModule, ProviderModule],
+    imports: [AppConfigModule, ProviderAccountModule, ProviderModule],
     controllers: [PaymentController],
     providers: [
         PaymentService,

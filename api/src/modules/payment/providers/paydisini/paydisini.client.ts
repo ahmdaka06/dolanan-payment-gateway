@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
+import { AppConfigService } from '../../../../config/app-config.service';
 
 @Injectable()
 export class PaydisiniClient {
     private readonly client: AxiosInstance;
 
-    constructor() {
+    constructor(private readonly config: AppConfigService) {
         this.client = axios.create({
-            baseURL: process.env.PAYDISINI_API_URL || 'https://api.paydisini.co.id',
+            baseURL: this.config.paydisiniApiUrl,
             headers: {
                 'Content-Type': 'application/json',
             },
