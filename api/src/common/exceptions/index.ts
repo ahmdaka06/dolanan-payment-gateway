@@ -1,6 +1,7 @@
 export { AppException } from './app.exception';
 export { AuthInvalidCredentialsException } from './auth-invalid-credentials.exception';
 export { AuthUnauthorizedException } from './auth-unauthorized.exception';
+export { CannotDeleteSelfException } from './cannot-delete-self.exception';
 export { ChannelInactiveException } from './channel-inactive.exception';
 export { ChannelNotFoundException } from './channel-not-found.exception';
 export { PaymentFailedException } from './payment-failed.exception';

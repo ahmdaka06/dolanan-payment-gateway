@@ -17,6 +17,7 @@ import {
     AuthUnauthorizedException,
     UserNotFoundException,
 } from 'src/common/exceptions';
+import { User } from '../../user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -66,6 +67,16 @@ export class AuthService {
         if (payload) {
             await this.authRepository.deleteRefreshToken(payload.jti);
         }
+    }
+
+    async getProfile(userId: string): Promise<User> {
+        const user = await this.authRepository.findUserById(userId);
+
+        if (!user) {
+            throw new UserNotFoundException(userId);
+        }
+
+        return user;
     }
 
     private async generateTokenPair(user: TokenPairPayload): Promise<TokenPairData> {
