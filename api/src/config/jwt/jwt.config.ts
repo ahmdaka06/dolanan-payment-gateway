@@ -1,8 +1,11 @@
-import { JwtModuleOptions } from '@nestjs/jwt';
+import { JwtModuleOptions, JwtSignOptions } from '@nestjs/jwt';
+import { AppConfigService } from '../app-config.service';
 
-export const jwtConfig: JwtModuleOptions = {
-    secret: process.env.JWT_SECRET,
+export function createJwtOptions(config: AppConfigService): JwtModuleOptions {
+  return {
+    secret: config.jwtSecret,
     signOptions: {
-        expiresIn: process.env.JWT_EXPIRES_IN || '1d',
-    },
-};
+      expiresIn: config.jwtExpiresIn,
+    } as JwtSignOptions,
+  };
+}

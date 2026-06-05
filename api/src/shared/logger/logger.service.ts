@@ -1,10 +1,10 @@
-import { Injectable, LoggerService, LogLevel } from '@nestjs/common';
+import { Injectable, LoggerService, LogLevel, Optional } from '@nestjs/common';
 
 @Injectable()
 export class AppLoggerService implements LoggerService {
     private readonly context?: string;
 
-    constructor(context?: string) {
+    constructor(@Optional() context?: string) {
         this.context = context;
     }
 

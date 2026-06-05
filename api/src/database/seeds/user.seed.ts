@@ -13,13 +13,13 @@ export class UserSeed {
 
     async run() {
         const adminExists = await this.userRepository.findOne({
-            where: { username: 'admin' },
+            where: { email: 'admin@example.com' },
         });
 
         if (!adminExists) {
             const hashedPassword = await bcrypt.hash('admin123', 10);
             await this.userRepository.save({
-                username: 'admin',
+                email: 'admin@example.com',
                 password: hashedPassword,
             });
         }

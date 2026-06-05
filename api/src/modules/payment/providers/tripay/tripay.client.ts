@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
+import { AppConfigService } from '../../../../config/app-config.service';
 
 @Injectable()
 export class TripayClient {
+    constructor(private readonly config: AppConfigService) {}
+
     getClient(apiKey: string): AxiosInstance {
         return axios.create({
-            baseURL: process.env.TRIPAY_API_URL || 'https://api.tripay.co.id',
+            baseURL: this.config.tripayApiUrl,
             headers: {
                 'Authorization': `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
