@@ -9,7 +9,7 @@ export interface PaginationMeta {
 
 export interface PaginatedResult<T> {
     items: T[];
-    pagination: PaginationMeta;
+    meta: PaginationMeta;
 }
 
 export interface PaginationOptions {

@@ -778,7 +778,7 @@ Query parameters:
                 "createdAt": "2026-06-05T10:00:00.000Z"
             }
         ],
-        "pagination": {
+        "meta": {
             "page": 1,
             "pageSize": 10,
             "totalItems": 100,
@@ -1043,7 +1043,7 @@ Query parameters:
                 "createdAt": "2026-06-05T10:00:00.000Z"
             }
         ],
-        "pagination": {
+        "meta": {
             "page": 1,
             "pageSize": 10,
             "totalItems": 45,

@@ -1,4 +1,4 @@
 export interface RequestUser {
-    id: string;
-    username: string;
+    sub: string;
+    email: string;
 }
