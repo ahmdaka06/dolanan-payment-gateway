@@ -28,11 +28,17 @@ function applyTheme(theme: Theme) {
 }
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>(() => getPreferredTheme());
+  const [theme, setTheme] = useState<Theme>("light");
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    applyTheme(theme);
-  }, [theme]);
+    queueMicrotask(() => {
+      const preferredTheme = getPreferredTheme();
+      setTheme(preferredTheme);
+      setIsMounted(true);
+      applyTheme(preferredTheme);
+    });
+  }, []);
 
   function toggleTheme() {
     const nextTheme = theme === "dark" ? "light" : "dark";
@@ -48,7 +54,7 @@ export function ThemeToggle() {
       size="icon"
       variant="secondary"
     >
-      {theme === "dark" ? (
+      {isMounted && theme === "dark" ? (
         <Sun className="size-4" />
       ) : (
         <Moon className="size-4" />

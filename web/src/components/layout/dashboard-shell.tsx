@@ -1,19 +1,21 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { DashboardHeader } from "@/components/layout/dashboard-header";
 import { DashboardSidebar } from "@/components/layout/dashboard-sidebar";
 import { cn } from "@/lib/utils";
 
 export function DashboardShell({ children }: { children: ReactNode }) {
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    if (typeof window === "undefined") {
-      return false;
-    }
-
-    return window.localStorage.getItem("sidebar-collapsed") === "true";
-  });
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      setIsCollapsed(
+        window.localStorage.getItem("sidebar-collapsed") === "true",
+      );
+    });
+  }, []);
 
   function toggleCollapsed() {
     setIsCollapsed((current) => {

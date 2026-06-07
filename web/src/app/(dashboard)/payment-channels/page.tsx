@@ -1,8 +1,37 @@
-import { ListChecks } from "lucide-react";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { DataTable } from "@/components/ui/data-table";
 import { PageHeader } from "@/components/ui/page-header";
-import { EmptyState } from "@/components/ui/states";
+
+type PaymentChannelRow = {
+  id: string;
+  provider: string;
+  code: string;
+  name: string;
+  status: string;
+};
+
+const paymentChannelColumns: ColumnDef<PaymentChannelRow>[] = [
+  {
+    accessorKey: "provider",
+    header: "Provider",
+  },
+  {
+    accessorKey: "code",
+    header: "Code",
+  },
+  {
+    accessorKey: "name",
+    header: "Channel",
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+  },
+];
+
+const paymentChannelData: PaymentChannelRow[] = [];
 
 export default function PaymentChannelsPage() {
   return (
@@ -26,15 +55,14 @@ export default function PaymentChannelsPage() {
           <Badge variant="info">Sync ready</Badge>
         </CardHeader>
         <CardContent>
-          <EmptyState
-            action={
-              <div className="flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-400">
-                <ListChecks className="size-4" />
-                Payment channel placeholder
-              </div>
-            }
-            description="Data channel belum dihubungkan. UI ini disiapkan untuk endpoint payment channels."
-            title="Channel belum tersedia"
+          <DataTable
+            columns={paymentChannelColumns}
+            data={paymentChannelData}
+            emptyDescription="Data channel belum dihubungkan. Response dari GET /payment-channels akan masuk ke tabel ini."
+            emptyTitle="Channel belum tersedia"
+            enablePagination
+            enableSearch
+            searchPlaceholder="Cari channel..."
           />
         </CardContent>
       </Card>

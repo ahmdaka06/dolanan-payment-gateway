@@ -1,8 +1,32 @@
-import { Network } from "lucide-react";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { DataTable } from "@/components/ui/data-table";
 import { PageHeader } from "@/components/ui/page-header";
-import { EmptyState } from "@/components/ui/states";
+
+type ProviderRow = {
+  id: string;
+  name: string;
+  code: string;
+  status: string;
+};
+
+const providerColumns: ColumnDef<ProviderRow>[] = [
+  {
+    accessorKey: "name",
+    header: "Provider",
+  },
+  {
+    accessorKey: "code",
+    header: "Code",
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+  },
+];
+
+const providerData: ProviderRow[] = [];
 
 export default function ProvidersPage() {
   return (
@@ -26,15 +50,14 @@ export default function ProvidersPage() {
           <Badge variant="warning">Coming soon</Badge>
         </CardHeader>
         <CardContent>
-          <EmptyState
-            action={
-              <div className="flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-400">
-                <Network className="size-4" />
-                Provider table placeholder
-              </div>
-            }
-            description="Belum ada integrasi endpoint provider pada frontend. Komponen tabel dapat ditempatkan di area ini."
-            title="Provider belum dimuat"
+          <DataTable
+            columns={providerColumns}
+            data={providerData}
+            emptyDescription="Belum ada integrasi endpoint provider pada frontend. Data dari GET /providers akan ditampilkan di tabel ini."
+            emptyTitle="Provider belum dimuat"
+            enablePagination
+            enableSearch
+            searchPlaceholder="Cari provider..."
           />
         </CardContent>
       </Card>

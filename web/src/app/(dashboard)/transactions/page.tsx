@@ -1,8 +1,42 @@
-import { ReceiptText } from "lucide-react";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { DataTable } from "@/components/ui/data-table";
 import { PageHeader } from "@/components/ui/page-header";
-import { EmptyState } from "@/components/ui/states";
+
+type TransactionRow = {
+  id: string;
+  invoiceNo: string;
+  provider: string;
+  amount: string;
+  status: string;
+  createdAt: string;
+};
+
+const transactionColumns: ColumnDef<TransactionRow>[] = [
+  {
+    accessorKey: "invoiceNo",
+    header: "Invoice",
+  },
+  {
+    accessorKey: "provider",
+    header: "Provider",
+  },
+  {
+    accessorKey: "amount",
+    header: "Amount",
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Created",
+  },
+];
+
+const transactionData: TransactionRow[] = [];
 
 export default function TransactionsPage() {
   return (
@@ -26,15 +60,15 @@ export default function TransactionsPage() {
           <Badge variant="neutral">Table ready</Badge>
         </CardHeader>
         <CardContent>
-          <EmptyState
-            action={
-              <div className="flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-400">
-                <ReceiptText className="size-4" />
-                Transaction table placeholder
-              </div>
-            }
-            description="Belum ada request ke endpoint transaction. Tabel monitoring akan ditempatkan di area ini."
-            title="Transaksi belum dimuat"
+          <DataTable
+            columns={transactionColumns}
+            data={transactionData}
+            emptyDescription="Belum ada request ke endpoint transaction. Response dari GET /transaction akan ditampilkan di tabel ini."
+            emptyTitle="Transaksi belum dimuat"
+            enablePagination
+            enableSearch
+            pageSize={10}
+            searchPlaceholder="Cari transaksi..."
           />
         </CardContent>
       </Card>
