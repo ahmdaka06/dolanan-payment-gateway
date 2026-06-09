@@ -16,6 +16,8 @@ import { CreateProviderAccountDto } from '../dto/payload/create-provider-account
 import { UpdateProviderAccountDto } from '../dto/payload/update-provider-account.dto';
 import { ProviderAccount } from '../entities/provider-account.entity';
 import { ResponseDto } from '../../../common/dto/response/api-response.dto';
+import { PaginatedResponseDto } from '../../../common/dto/response/paginated-response.dto';
+import type { PaginatedResult } from '../../../common/interfaces/pagination.type';
 
 @ApiTags('Provider Accounts')
 @ApiBearerAuth()
@@ -24,11 +26,17 @@ export class ProviderAccountController {
     constructor(private readonly providerAccountService: ProviderAccountService) {}
 
     @Get()
-    @ApiOperation({ summary: 'Get all provider accounts' })
+    @ApiOperation({ summary: 'Get all provider accounts with pagination' })
+    @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+    @ApiQuery({ name: 'pageSize', required: false, type: Number, example: 10 })
     @ApiQuery({ name: 'providerId', required: false, type: String })
-    @ApiOkResponse({ description: 'List of provider accounts', type: ResponseDto(ProviderAccount) })
-    async getAll(@Query('providerId') providerId?: string) {
-        return this.providerAccountService.findAll(providerId);
+    @ApiOkResponse({ description: 'Paginated list of provider accounts', type: PaginatedResponseDto(ProviderAccount) })
+    async getAll(
+        @Query('page') page?: number,
+        @Query('pageSize') pageSize?: number,
+        @Query('providerId') providerId?: string,
+    ): Promise<PaginatedResult<ProviderAccount>> {
+        return this.providerAccountService.findAll({ page, pageSize }, providerId);
     }
 
     @Get(':id')

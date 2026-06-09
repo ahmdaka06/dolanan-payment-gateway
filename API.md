@@ -23,10 +23,10 @@ Authorization: Bearer <token>
 ### Success
 
 ```typescript
-interface ApiResponse<T = any> {
-    success: boolean;
+type ApiResponse<T = any> = {
+    status: boolean;
     data: T;
-    message?: string;
+    message: string;
     timestamp: string;
 }
 ```
@@ -35,7 +35,7 @@ Contoh:
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Success",
     "data": {},
     "timestamp": "2026-06-05T10:00:00.000Z"
@@ -45,7 +45,7 @@ Contoh:
 ### Pagination
 
 ```typescript
-interface PaginationMeta {
+type PaginationMeta = {
     page: number;
     pageSize: number;
     totalItems: number;
@@ -54,17 +54,38 @@ interface PaginationMeta {
     hasPreviousPage: boolean;
 }
 
-interface PaginatedResult<T> {
+type PaginatedResult<T> = {
     items: T[];
-    pagination: PaginationMeta;
+    meta: PaginationMeta;
+}
+```
+
+Contoh paginated response:
+
+```json
+{
+    "status": true,
+    "message": "Success",
+    "data": {
+        "items": [],
+        "meta": {
+            "page": 1,
+            "pageSize": 10,
+            "totalItems": 100,
+            "totalPages": 10,
+            "hasNextPage": true,
+            "hasPreviousPage": false
+        }
+    },
+    "timestamp": "2026-06-05T10:00:00.000Z"
 }
 ```
 
 ### Error
 
 ```typescript
-interface ApiErrorResponse {
-    success: boolean;
+type ApiErrorResponse = {
+    status: boolean;
     statusCode: number;
     errorCode?: string;
     message: string;
@@ -76,7 +97,7 @@ Contoh:
 
 ```json
 {
-    "success": false,
+    "status": false,
     "statusCode": 404,
     "errorCode": "PROVIDER_NOT_FOUND",
     "message": "Provider tidak ditemukan",
@@ -116,7 +137,7 @@ POST /api/v1/auth/login
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Login success",
     "data": {
         "accessToken": "eyJhbGciOiJIUzI1NiIs...",
@@ -135,7 +156,7 @@ POST /api/v1/auth/login
 
 ```json
 {
-    "success": false,
+    "status": false,
     "statusCode": 401,
     "errorCode": "AUTH_INVALID_CREDENTIALS",
     "message": "Username atau password salah",
@@ -171,7 +192,7 @@ POST /api/v1/auth/refresh
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Token refreshed",
     "data": {
         "accessToken": "eyJhbGciOiJIUzI1NiIs...",
@@ -190,7 +211,7 @@ POST /api/v1/auth/refresh
 
 ```json
 {
-    "success": false,
+    "status": false,
     "statusCode": 401,
     "errorCode": "AUTH_UNAUTHORIZED",
     "message": "Refresh token tidak valid atau sudah expired",
@@ -226,7 +247,7 @@ DELETE /api/v1/auth/logout
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Logout success",
     "data": null,
     "timestamp": "2026-06-05T10:00:00.000Z"
@@ -244,8 +265,15 @@ Semua endpoint user memerlukan Bearer token.
 #### Request
 
 ```http
-GET /api/v1/user
+GET /api/v1/user?page=1&pageSize=10
 ```
+
+Query parameters:
+
+| Parameter  | Type   | Required | Default | Description             |
+| ---------- | ------ | -------- | ------- | ----------------------- |
+| `page`     | number | No       | 1       | Halaman                 |
+| `pageSize` | number | No       | 10      | Jumlah item per halaman |
 
 #### Response
 
@@ -253,16 +281,26 @@ GET /api/v1/user
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Success",
-    "data": [
-        {
-            "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-            "username": "admin",
-            "createdAt": "2026-01-01T00:00:00.000Z",
-            "updatedAt": "2026-01-01T00:00:00.000Z"
+    "data": {
+        "items": [
+            {
+                "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                "username": "admin",
+                "createdAt": "2026-01-01T00:00:00.000Z",
+                "updatedAt": "2026-01-01T00:00:00.000Z"
+            }
+        ],
+        "meta": {
+            "page": 1,
+            "pageSize": 10,
+            "totalItems": 1,
+            "totalPages": 1,
+            "hasNextPage": false,
+            "hasPreviousPage": false
         }
-    ],
+    },
     "timestamp": "2026-06-05T10:00:00.000Z"
 }
 ```
@@ -302,7 +340,7 @@ POST /api/v1/user
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "User created",
     "data": {
         "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
@@ -332,7 +370,7 @@ GET /api/v1/providers
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Success",
     "data": [
         {
@@ -389,7 +427,7 @@ POST /api/v1/providers
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Provider created",
     "data": {
         "id": "p1r2o3v4-i5d6-e7r8-9012-345678901234"
@@ -405,7 +443,7 @@ POST /api/v1/providers
 #### Request
 
 ```http
-PUT /api/v1/providers/{id}
+PATCH /api/v1/providers/{id}
 ```
 
 Path parameters:
@@ -435,7 +473,7 @@ Path parameters:
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Provider updated",
     "data": {
         "id": "p1r2o3v4-i5d6-e7r8-9012-345678901234"
@@ -443,6 +481,58 @@ Path parameters:
     "timestamp": "2026-06-05T10:00:00.000Z"
 }
 ```
+
+---
+
+### Toggle Active Provider
+
+#### Request
+
+```http
+PATCH /api/v1/providers/{id}/toggle-active
+```
+
+Path parameters:
+
+| Parameter | Type   | Required | Description   |
+| --------- | ------ | -------- | ------------- |
+| `id`      | string | Yes      | UUID provider |
+
+#### Response
+
+**200 OK**
+
+```json
+{
+    "status": true,
+    "message": "Provider active status toggled",
+    "data": {
+        "id": "p1r2o3v4-i5d6-e7r8-9012-345678901234",
+        "isActive": false
+    },
+    "timestamp": "2026-06-05T10:00:00.000Z"
+}
+```
+
+---
+
+### Delete Provider
+
+#### Request
+
+```http
+DELETE /api/v1/providers/{id}
+```
+
+Path parameters:
+
+| Parameter | Type   | Required | Description   |
+| --------- | ------ | -------- | ------------- |
+| `id`      | string | Yes      | UUID provider |
+
+#### Response
+
+**204 No Content**
 
 ---
 
@@ -464,7 +554,7 @@ GET /api/v1/payment-channels
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Success",
     "data": [
         {
@@ -527,7 +617,7 @@ POST /api/v1/payment-channels
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Payment channel created",
     "data": {
         "id": "c1h2a3n4-n5e6-l7s8-9012-345678901234"
@@ -564,12 +654,112 @@ POST /api/v1/payment-channels/sync
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Channels synced",
     "data": null,
     "timestamp": "2026-06-05T10:00:00.000Z"
 }
 ```
+
+---
+
+### Update Channel
+
+#### Request
+
+```http
+PATCH /api/v1/payment-channels/{id}
+```
+
+Path parameters:
+
+| Parameter | Type   | Required | Description    |
+| --------- | ------ | -------- | -------------- |
+| `id`      | string | Yes      | UUID channel   |
+
+```json
+{
+    "name": "QRIS Updated",
+    "feeFlat": 1500,
+    "isActive": false
+}
+```
+
+| Field        | Type    | Required | Description                |
+| ------------ | ------- | -------- | -------------------------- |
+| `name`       | string  | No       | Nama channel               |
+| `code`       | string  | No       | Kode channel               |
+| `providerId` | string  | No       | UUID provider              |
+| `feeFlat`    | number  | No       | Biaya admin flat (IDR)     |
+| `feePercent` | number  | No       | Biaya admin persentase (%) |
+| `isActive`   | boolean | No       | Status channel             |
+
+#### Response
+
+**200 OK**
+
+```json
+{
+    "status": true,
+    "message": "Payment channel updated",
+    "data": {
+        "id": "c1h2a3n4-n5e6-l7s8-9012-345678901234"
+    },
+    "timestamp": "2026-06-05T10:00:00.000Z"
+}
+```
+
+---
+
+### Toggle Active Channel
+
+#### Request
+
+```http
+PATCH /api/v1/payment-channels/{id}/toggle-active
+```
+
+Path parameters:
+
+| Parameter | Type   | Required | Description    |
+| --------- | ------ | -------- | -------------- |
+| `id`      | string | Yes      | UUID channel   |
+
+#### Response
+
+**200 OK**
+
+```json
+{
+    "status": true,
+    "message": "Active status toggled",
+    "data": {
+        "id": "c1h2a3n4-n5e6-l7s8-9012-345678901234",
+        "isActive": false
+    },
+    "timestamp": "2026-06-05T10:00:00.000Z"
+}
+```
+
+---
+
+### Delete Channel
+
+#### Request
+
+```http
+DELETE /api/v1/payment-channels/{id}
+```
+
+Path parameters:
+
+| Parameter | Type   | Required | Description    |
+| --------- | ------ | -------- | -------------- |
+| `id`      | string | Yes      | UUID channel   |
+
+#### Response
+
+**204 No Content**
 
 ---
 
@@ -591,7 +781,7 @@ GET /api/v1/payment/channels
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Success",
     "data": [
         {
@@ -642,7 +832,7 @@ POST /api/v1/payment
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Payment created",
     "data": {
         "invoiceNo": "INV-20260605-0001",
@@ -693,7 +883,7 @@ Path parameters:
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Success",
     "data": {
         "invoiceNo": "INV-20260605-0001",
@@ -731,6 +921,257 @@ Status yang mungkin:
 
 ---
 
+## Provider Accounts
+
+Semua endpoint provider account memerlukan Bearer token.
+
+### Get Accounts
+
+Mendukung filter by `providerId` dan pagination.
+
+#### Request
+
+```http
+GET /api/v1/provider-accounts?page=1&pageSize=10&providerId=p1r2o3v4-i5d6-e7r8-9012-345678901234
+```
+
+Query parameters:
+
+| Parameter    | Type   | Required | Default | Description             |
+| ------------ | ------ | -------- | ------- | ----------------------- |
+| `page`       | number | No       | 1       | Halaman                 |
+| `pageSize`   | number | No       | 10      | Jumlah item per halaman |
+| `providerId` | string | No       | -       | Filter by UUID provider |
+
+#### Response
+
+**200 OK**
+
+```json
+{
+    "status": true,
+    "message": "Success",
+    "data": {
+        "items": [
+            {
+                "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                "providerId": "p1r2o3v4-i5d6-e7r8-9012-345678901234",
+                "name": "Tripay Production",
+                "environment": "production",
+                "isActive": true,
+                "createdAt": "2026-01-01T00:00:00.000Z",
+                "updatedAt": "2026-01-01T00:00:00.000Z"
+            }
+        ],
+        "meta": {
+            "page": 1,
+            "pageSize": 10,
+            "totalItems": 5,
+            "totalPages": 1,
+            "hasNextPage": false,
+            "hasPreviousPage": false
+        }
+    },
+    "timestamp": "2026-06-05T10:00:00.000Z"
+}
+```
+
+| Field         | Type    | Description                         |
+| ------------- | ------- | ----------------------------------- |
+| `id`          | string  | UUID provider account               |
+| `providerId`  | string  | UUID provider terkait               |
+| `name`        | string  | Nama akun provider                  |
+| `environment` | string  | Environment (`production`, `sandbox`) |
+| `isActive`    | boolean | Status akun                         |
+| `createdAt`   | string  | Tanggal dibuat (ISO)                |
+| `updatedAt`   | string  | Tanggal update (ISO)                |
+
+---
+
+### Get Account Detail
+
+#### Request
+
+```http
+GET /api/v1/provider-accounts/{id}
+```
+
+Path parameters:
+
+| Parameter | Type   | Required | Description             |
+| --------- | ------ | -------- | ----------------------- |
+| `id`      | string | Yes      | UUID provider account   |
+
+#### Response
+
+**200 OK**
+
+```json
+{
+    "status": true,
+    "message": "Provider account found",
+    "data": {
+        "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "providerId": "p1r2o3v4-i5d6-e7r8-9012-345678901234",
+        "name": "Tripay Production",
+        "apiKey": "xxxx",
+        "secretKey": "xxxx",
+        "merchantCode": "T123",
+        "environment": "production",
+        "isActive": true,
+        "createdAt": "2026-01-01T00:00:00.000Z",
+        "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "timestamp": "2026-06-05T10:00:00.000Z"
+}
+```
+
+---
+
+### Create Account
+
+#### Request
+
+```http
+POST /api/v1/provider-accounts
+```
+
+```json
+{
+    "providerId": "p1r2o3v4-i5d6-e7r8-9012-345678901234",
+    "name": "Tripay Production",
+    "apiKey": "xxxx",
+    "secretKey": "xxxx",
+    "merchantCode": "T123",
+    "environment": "production"
+}
+```
+
+| Field          | Type   | Required | Description                  |
+| -------------- | ------ | -------- | ---------------------------- |
+| `providerId`   | string | Yes      | UUID provider                |
+| `name`         | string | Yes      | Nama akun                    |
+| `apiKey`       | string | No       | API key provider             |
+| `secretKey`    | string | No       | Secret key provider          |
+| `merchantCode` | string | No       | Kode merchant dari provider  |
+| `environment`  | string | No       | Environment (default: `sandbox`) |
+
+#### Response
+
+**201 Created**
+
+```json
+{
+    "status": true,
+    "message": "Provider account created",
+    "data": {
+        "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+    },
+    "timestamp": "2026-06-05T10:00:00.000Z"
+}
+```
+
+---
+
+### Update Account
+
+#### Request
+
+```http
+PATCH /api/v1/provider-accounts/{id}
+```
+
+Path parameters:
+
+| Parameter | Type   | Required | Description             |
+| --------- | ------ | -------- | ----------------------- |
+| `id`      | string | Yes      | UUID provider account   |
+
+```json
+{
+    "name": "Tripay Sandbox",
+    "apiKey": "yyyy",
+    "isActive": false
+}
+```
+
+| Field          | Type    | Required | Description                  |
+| -------------- | ------- | -------- | ---------------------------- |
+| `name`         | string  | No       | Nama akun                    |
+| `apiKey`       | string  | No       | API key provider             |
+| `secretKey`    | string  | No       | Secret key provider          |
+| `merchantCode` | string  | No       | Kode merchant dari provider  |
+| `isActive`     | boolean | No       | Status akun                  |
+
+#### Response
+
+**200 OK**
+
+```json
+{
+    "status": true,
+    "message": "Provider account updated",
+    "data": {
+        "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+    },
+    "timestamp": "2026-06-05T10:00:00.000Z"
+}
+```
+
+---
+
+### Toggle Active Account
+
+#### Request
+
+```http
+PATCH /api/v1/provider-accounts/{id}/toggle-active
+```
+
+Path parameters:
+
+| Parameter | Type   | Required | Description             |
+| --------- | ------ | -------- | ----------------------- |
+| `id`      | string | Yes      | UUID provider account   |
+
+#### Response
+
+**200 OK**
+
+```json
+{
+    "status": true,
+    "message": "Provider account active status toggled",
+    "data": {
+        "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "isActive": false
+    },
+    "timestamp": "2026-06-05T10:00:00.000Z"
+}
+```
+
+---
+
+### Delete Account
+
+#### Request
+
+```http
+DELETE /api/v1/provider-accounts/{id}
+```
+
+Path parameters:
+
+| Parameter | Type   | Required | Description             |
+| --------- | ------ | -------- | ----------------------- |
+| `id`      | string | Yes      | UUID provider account   |
+
+#### Response
+
+**204 No Content**
+
+---
+
 ## Transactions
 
 Semua endpoint transaction memerlukan Bearer token.
@@ -761,7 +1202,7 @@ Query parameters:
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Success",
     "data": {
         "items": [
@@ -813,7 +1254,7 @@ Path parameters:
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Success",
     "data": {
         "id": "t1r2x3n4-a5c6-t7i8-o9n0-123456789012",
@@ -838,7 +1279,7 @@ Path parameters:
 
 ```json
 {
-    "success": false,
+    "status": false,
     "statusCode": 404,
     "errorCode": "TRANSACTION_NOT_FOUND",
     "message": "Transaksi tidak ditemukan",
@@ -878,7 +1319,7 @@ Payload mengikuti dokumentasi resmi Tripay.
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Webhook processed",
     "data": null,
     "timestamp": "2026-06-05T12:00:00.000Z"
@@ -889,7 +1330,7 @@ Payload mengikuti dokumentasi resmi Tripay.
 
 ```json
 {
-    "success": false,
+    "status": false,
     "statusCode": 401,
     "errorCode": "WEBHOOK_INVALID_SIGNATURE",
     "message": "Signature webhook tidak valid",
@@ -926,7 +1367,7 @@ Payload mengikuti dokumentasi resmi Duitku.
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Webhook processed",
     "data": null,
     "timestamp": "2026-06-05T12:00:00.000Z"
@@ -937,7 +1378,7 @@ Payload mengikuti dokumentasi resmi Duitku.
 
 ```json
 {
-    "success": false,
+    "status": false,
     "statusCode": 401,
     "errorCode": "WEBHOOK_INVALID_SIGNATURE",
     "message": "Signature webhook tidak valid",
@@ -974,7 +1415,7 @@ Payload mengikuti dokumentasi resmi Paydisini.
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Webhook processed",
     "data": null,
     "timestamp": "2026-06-05T12:00:00.000Z"
@@ -985,7 +1426,7 @@ Payload mengikuti dokumentasi resmi Paydisini.
 
 ```json
 {
-    "success": false,
+    "status": false,
     "statusCode": 401,
     "errorCode": "WEBHOOK_INVALID_SIGNATURE",
     "message": "Signature webhook tidak valid",
@@ -1026,7 +1467,7 @@ Query parameters:
 
 ```json
 {
-    "success": true,
+    "status": true,
     "message": "Success",
     "data": {
         "items": [

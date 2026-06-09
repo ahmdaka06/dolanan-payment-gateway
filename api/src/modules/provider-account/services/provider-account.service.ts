@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProviderAccountRepository } from '../repositories/provider-account.repository';
-import { CreateProviderAccountDto } from '../dto/payload/create-provider-account.dto';
-import { UpdateProviderAccountDto } from '../dto/payload/update-provider-account.dto';
 import { ProviderAccount } from '../entities/provider-account.entity';
+import type { CreateProviderAccountData } from '../types/create-provider-account-data.type';
+import type { UpdateProviderAccountData } from '../types/update-provider-account-data.type';
+import type { PaginatedResult, PaginationOptions } from '../../../common/interfaces/pagination.type';
 
 @Injectable()
 export class ProviderAccountService {
@@ -10,15 +11,13 @@ export class ProviderAccountService {
         private readonly providerAccountRepository: ProviderAccountRepository,
     ) {}
 
-    async create(dto: CreateProviderAccountDto): Promise<ProviderAccount> {
-        return this.providerAccountRepository.create(dto);
-    }
-
-    async findAll(providerId?: string): Promise<ProviderAccount[]> {
-        if (providerId) {
-            return this.providerAccountRepository.findByProvider(providerId);
-        }
-        return this.providerAccountRepository.findAll();
+    async findAll(
+        options: PaginationOptions,
+        providerId?: string,
+    ): Promise<PaginatedResult<ProviderAccount>> {
+        const page = options.page ?? 1;
+        const pageSize = options.pageSize ?? 10;
+        return this.providerAccountRepository.findPaginated(page, pageSize, providerId);
     }
 
     async findOne(id: string): Promise<ProviderAccount> {
@@ -39,20 +38,22 @@ export class ProviderAccountService {
         return account;
     }
 
-    async update(id: string, dto: UpdateProviderAccountDto): Promise<ProviderAccount> {
-        const account = await this.findOne(id);
-        Object.assign(account, dto);
-        return this.providerAccountRepository.save(account);
+    async create(data: CreateProviderAccountData): Promise<ProviderAccount> {
+        return this.providerAccountRepository.create(data);
+    }
+
+    async update(id: string, data: UpdateProviderAccountData): Promise<ProviderAccount> {
+        await this.findOne(id);
+        return this.providerAccountRepository.update(id, data);
     }
 
     async toggleActive(id: string): Promise<ProviderAccount> {
         const account = await this.findOne(id);
-        account.isActive = !account.isActive;
-        return this.providerAccountRepository.save(account);
+        return this.providerAccountRepository.update(id, { isActive: !account.isActive });
     }
 
     async remove(id: string): Promise<void> {
-        const account = await this.findOne(id);
-        await this.providerAccountRepository.remove(account);
+        await this.findOne(id);
+        await this.providerAccountRepository.delete(id);
     }
 }

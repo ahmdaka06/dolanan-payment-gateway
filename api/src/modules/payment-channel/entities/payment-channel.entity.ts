@@ -6,7 +6,6 @@ import {
     UpdateDateColumn,
     ManyToOne,
     JoinColumn,
-    Index,
 } from 'typeorm';
 import { Provider } from '../../provider/entities/provider.entity';
 

@@ -6,11 +6,12 @@ import {
 } from '@nestjs/common';
 import { Observable, map } from 'rxjs';
 
-export interface SuccessResponse<T> {
-    success: boolean;
+export type SuccessResponse<T> = {
+    status: boolean;
+    message: string;
     data: T;
     timestamp: string;
-}
+};
 
 @Injectable()
 export class ResponseInterceptor<T> implements NestInterceptor<T, SuccessResponse<T>> {
@@ -20,7 +21,8 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, SuccessRespons
     ): Observable<SuccessResponse<T>> {
         return next.handle().pipe(
             map((data) => ({
-                success: true,
+                status: true,
+                message: 'Success',
                 data,
                 timestamp: new Date().toISOString(),
             })),

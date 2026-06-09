@@ -20,6 +20,7 @@ import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 import type { RequestUser } from '../../../common/interfaces/request-user.type';
 import type { PaginatedResult } from '../../../common/interfaces/pagination.type';
 import { ResponseDto } from '../../../common/dto/response/api-response.dto';
+import { PaginatedResponseDto } from '../../../common/dto/response/paginated-response.dto';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -31,7 +32,7 @@ export class UserController {
     @ApiOperation({ summary: 'Get all users with pagination' })
     @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
     @ApiQuery({ name: 'pageSize', required: false, type: Number, example: 10 })
-    @ApiOkResponse({ description: 'Paginated list of users', type: ResponseDto(User) })
+    @ApiOkResponse({ description: 'Paginated list of users', type: PaginatedResponseDto(User) })
     async getAllUsers(
         @Query('page') page?: number,
         @Query('pageSize') pageSize?: number,

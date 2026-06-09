@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProviderAccount } from '../entities/provider-account.entity';
+import type { PaginatedResult } from '../../../common/interfaces/pagination.type';
 
 @Injectable()
 export class ProviderAccountRepository {
@@ -15,6 +16,33 @@ export class ProviderAccountRepository {
             relations: { provider: true },
             order: { createdAt: 'DESC' },
         });
+    }
+
+    async findPaginated(
+        page: number,
+        pageSize: number,
+        providerId?: string,
+    ): Promise<PaginatedResult<ProviderAccount>> {
+        const where = providerId ? { providerId } : {};
+        const [items, totalItems] = await this.accountRepo.findAndCount({
+            where,
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+            relations: { provider: true },
+            order: { createdAt: 'DESC' },
+        });
+
+        return {
+            items,
+            meta: {
+                page,
+                pageSize,
+                totalItems,
+                totalPages: Math.ceil(totalItems / pageSize),
+                hasNextPage: page * pageSize < totalItems,
+                hasPreviousPage: page > 1,
+            },
+        };
     }
 
     async findByProvider(providerId: string): Promise<ProviderAccount[]> {
@@ -43,11 +71,12 @@ export class ProviderAccountRepository {
         return this.accountRepo.save(account);
     }
 
-    async save(account: ProviderAccount): Promise<ProviderAccount> {
-        return this.accountRepo.save(account);
+    async update(id: string, data: Partial<ProviderAccount>): Promise<ProviderAccount> {
+        await this.accountRepo.update(id, data);
+        return this.accountRepo.findOneByOrFail({ id });
     }
 
-    async remove(account: ProviderAccount): Promise<void> {
-        await this.accountRepo.remove(account);
+    async delete(id: string): Promise<void> {
+        await this.accountRepo.delete(id);
     }
 }
