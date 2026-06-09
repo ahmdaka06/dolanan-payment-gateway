@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ProviderCode } from '../../../common/enums/provider-code.enum';
-import type { IPaymentProvider } from '../interfaces/payment-provider.interface';
+import type { IPaymentProvider } from '../types/payment-provider.type';
 
 @Injectable()
 export class PaymentProviderFactory {

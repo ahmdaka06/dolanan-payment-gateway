@@ -1,4 +1,4 @@
-export interface ProviderResponse {
+export type ProviderResponse = {
     success: boolean;
     statusCode: number;
     data: any;

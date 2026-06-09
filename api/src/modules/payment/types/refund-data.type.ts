@@ -1,4 +1,4 @@
-export interface RefundData {
+export type RefundData = {
     invoiceNo: string;
     amount: number;
     reason?: string;

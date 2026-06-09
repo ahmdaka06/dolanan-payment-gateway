@@ -1,4 +1,4 @@
-export interface SyncChannelData {
+export type SyncChannelData = {
     providerCode: string;
     channels: Array<{
         code: string;

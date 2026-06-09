@@ -1,4 +1,4 @@
-export interface ProviderRequest {
+export type ProviderRequest = {
     method: string;
     endpoint: string;
     headers: Record<string, string>;

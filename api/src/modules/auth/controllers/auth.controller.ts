@@ -6,7 +6,7 @@ import { RefreshTokenDto } from '../dto/payload/refresh-token.dto';
 import { AuthResponse } from '../dto/response/auth-response.dto';
 import { Public } from '../../../common/decorators/public.decorator';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
-import type { RequestUser } from '../../../common/types/request-user.type';
+import type { RequestUser } from '../../../common/interfaces/request-user.type';
 import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { ResponseDto } from 'src/common/dto/response/api-response.dto';
 import { User } from '../../user/entities/user.entity';

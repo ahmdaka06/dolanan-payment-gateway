@@ -1,11 +1,11 @@
-export interface ApiResponse<T = any> {
+export type ApiResponse<T = any> = {
     success: boolean;
     data: T;
     message?: string;
     timestamp: string;
 }
 
-export interface ApiErrorResponse {
+export type ApiErrorResponse = {
     success: boolean;
     statusCode: number;
     errorCode?: string;

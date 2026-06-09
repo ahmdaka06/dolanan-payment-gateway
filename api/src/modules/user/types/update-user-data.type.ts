@@ -1,4 +1,4 @@
-export interface UpdateUserData {
+export type UpdateUserData = {
     email?: string;
     password?: string;
 }

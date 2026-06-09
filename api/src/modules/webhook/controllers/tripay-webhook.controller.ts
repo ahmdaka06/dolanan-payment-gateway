@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Req } from '@nestjs/common';
 import { WebhookService } from '../services/webhook.service';
-import { TripayWebhookDto } from '../dto/tripay-webhook.dto';
+import { TripayWebhookDto } from '../dto/payload/tripay-webhook.dto';
 
 @Controller('webhook/tripay')
 export class TripayWebhookController {

@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Req } from '@nestjs/common';
 import { WebhookService } from '../services/webhook.service';
-import { PaydisiniWebhookDto } from '../dto/paydisini-webhook.dto';
+import { PaydisiniWebhookDto } from '../dto/payload/paydisini-webhook.dto';
 
 @Controller('webhook/paydisini')
 export class PaydisiniWebhookController {

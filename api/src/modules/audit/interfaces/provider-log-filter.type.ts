@@ -1,4 +1,4 @@
-export interface ProviderLogFilter {
+export type ProviderLogFilter = {
     providerId?: string;
     endpoint?: string;
     startDate?: Date;

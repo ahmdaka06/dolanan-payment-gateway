@@ -1,4 +1,4 @@
-export interface CreatePaymentResult {
+export type CreatePaymentResult = {
     success: boolean;
     invoiceNo: string;
     providerReference?: string;

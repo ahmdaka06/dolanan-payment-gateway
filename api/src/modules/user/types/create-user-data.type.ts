@@ -1,4 +1,4 @@
-export interface CreateUserData {
+export type CreateUserData = {
     email: string;
     password: string;
 }

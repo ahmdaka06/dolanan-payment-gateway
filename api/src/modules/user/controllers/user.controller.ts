@@ -13,12 +13,12 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiOkResponse, ApiBody, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { UserService } from '../services/user.service';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { CreateUserDto } from '../dto/payload/create-user.dto';
+import { UpdateUserDto } from '../dto/payload/update-user.dto';
 import { User } from '../entities/user.entity';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
-import type { RequestUser } from '../../../common/types/request-user.type';
-import type { PaginatedResult } from '../../../common/types/pagination.type';
+import type { RequestUser } from '../../../common/interfaces/request-user.type';
+import type { PaginatedResult } from '../../../common/interfaces/pagination.type';
 import { ResponseDto } from '../../../common/dto/response/api-response.dto';
 
 @ApiTags('Users')

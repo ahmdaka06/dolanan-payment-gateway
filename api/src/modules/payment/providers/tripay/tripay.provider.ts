@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IPaymentProvider } from '../../interfaces/payment-provider.interface';
+import { IPaymentProvider } from '../../types/payment-provider.type';
 import { CreatePaymentData } from '../../types/create-payment-data.type';
 import { CreatePaymentResult } from '../../types/create-payment-result.type';
 import { TripayClient } from './tripay.client';

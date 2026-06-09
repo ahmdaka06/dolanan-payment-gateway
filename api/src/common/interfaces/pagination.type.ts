@@ -1,4 +1,4 @@
-export interface PaginationMeta {
+export type PaginationMeta = {
     page: number;
     pageSize: number;
     totalItems: number;
@@ -7,12 +7,12 @@ export interface PaginationMeta {
     hasPreviousPage: boolean;
 }
 
-export interface PaginatedResult<T> {
+export type PaginatedResult<T> = {
     items: T[];
     meta: PaginationMeta;
 }
 
-export interface PaginationOptions {
+export type PaginationOptions = {
     page?: number;
     pageSize?: number;
 }

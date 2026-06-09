@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserRepository } from '../repositories/user.repository';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { CreateUserDto } from '../dto/payload/create-user.dto';
+import { UpdateUserDto } from '../dto/payload/update-user.dto';
 import { User } from '../entities/user.entity';
 import { UserNotFoundException, CannotDeleteSelfException } from '../../../common/exceptions';
-import type { PaginatedResult, PaginationOptions } from '../../../common/types/pagination.type';
+import type { PaginatedResult, PaginationOptions } from '../../../common/interfaces/pagination.type';
 
 @Injectable()
 export class UserService {

@@ -1,10 +1,12 @@
-import { IsOptional, IsString, IsBoolean, IsEnum } from 'class-validator';
-import { Environment } from '../enums/environment.enum';
+import { IsString, IsOptional, IsEnum } from 'class-validator';
+import { Environment } from '../../enums/environment.enum';
 
-export class UpdateProviderAccountDto {
-    @IsOptional()
+export class CreateProviderAccountDto {
     @IsString()
-    name?: string;
+    providerId: string;
+
+    @IsString()
+    name: string;
 
     @IsOptional()
     @IsString()
@@ -21,8 +23,4 @@ export class UpdateProviderAccountDto {
     @IsOptional()
     @IsEnum(Environment)
     environment?: Environment;
-
-    @IsOptional()
-    @IsBoolean()
-    isActive?: boolean;
 }

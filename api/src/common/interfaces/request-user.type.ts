@@ -1,4 +1,4 @@
-export interface RequestUser {
+export type RequestUser = {
     sub: string;
     email: string;
 }

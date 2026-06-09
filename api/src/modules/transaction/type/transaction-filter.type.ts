@@ -1,6 +1,6 @@
 import { TransactionStatus } from '../../../common/enums/transaction-status.enum';
 
-export interface TransactionFilter {
+export type TransactionFilter = {
     status?: TransactionStatus;
     startDate?: Date;
     endDate?: Date;

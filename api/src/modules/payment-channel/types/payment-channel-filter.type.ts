@@ -1,4 +1,4 @@
-export interface PaymentChannelFilter {
+export type PaymentChannelFilter = {
     providerId?: string;
     isActive?: boolean;
 }

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProviderAccountRepository } from '../repositories/provider-account.repository';
-import { CreateProviderAccountDto } from '../dto/create-provider-account.dto';
-import { UpdateProviderAccountDto } from '../dto/update-provider-account.dto';
+import { CreateProviderAccountDto } from '../dto/payload/create-provider-account.dto';
+import { UpdateProviderAccountDto } from '../dto/payload/update-provider-account.dto';
 import { ProviderAccount } from '../entities/provider-account.entity';
 
 @Injectable()
@@ -11,19 +11,18 @@ export class ProviderAccountService {
     ) {}
 
     async create(dto: CreateProviderAccountDto): Promise<ProviderAccount> {
-        const account = this.providerAccountRepository.create(dto);
-        return this.providerAccountRepository.save(account);
+        return this.providerAccountRepository.create(dto);
     }
 
-    async findAll(providerId: string): Promise<ProviderAccount[]> {
-        return this.providerAccountRepository.findByProvider(providerId);
+    async findAll(providerId?: string): Promise<ProviderAccount[]> {
+        if (providerId) {
+            return this.providerAccountRepository.findByProvider(providerId);
+        }
+        return this.providerAccountRepository.findAll();
     }
 
     async findOne(id: string): Promise<ProviderAccount> {
-        const account = await this.providerAccountRepository.findOne({
-            where: { id },
-            relations: { provider: true },
-        });
+        const account = await this.providerAccountRepository.findById(id);
         if (!account) {
             throw new NotFoundException(`ProviderAccount with ID ${id} not found`);
         }
@@ -43,6 +42,12 @@ export class ProviderAccountService {
     async update(id: string, dto: UpdateProviderAccountDto): Promise<ProviderAccount> {
         const account = await this.findOne(id);
         Object.assign(account, dto);
+        return this.providerAccountRepository.save(account);
+    }
+
+    async toggleActive(id: string): Promise<ProviderAccount> {
+        const account = await this.findOne(id);
+        account.isActive = !account.isActive;
         return this.providerAccountRepository.save(account);
     }
 

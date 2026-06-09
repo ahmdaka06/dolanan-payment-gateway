@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
-import type { PaginatedResult } from '../../../common/types/pagination.type';
+import type { PaginatedResult } from '../../../common/interfaces/pagination.type';
 
 @Injectable()
 export class UserRepository {

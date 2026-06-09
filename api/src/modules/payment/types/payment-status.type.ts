@@ -1,4 +1,4 @@
-export interface PaymentStatus {
+export type PaymentStatus = {
     invoiceNo: string;
     status: string;
     amount: number;

@@ -1,4 +1,4 @@
-export interface CreatePaymentData {
+export type CreatePaymentData = {
     amount: number;
     invoiceNo: string;
     providerId: string;

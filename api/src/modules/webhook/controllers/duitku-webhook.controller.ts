@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Req } from '@nestjs/common';
 import { WebhookService } from '../services/webhook.service';
-import { DuitkuWebhookDto } from '../dto/duitku-webhook.dto';
+import { DuitkuWebhookDto } from '../dto/payload/duitku-webhook.dto';
 
 @Controller('webhook/duitku')
 export class DuitkuWebhookController {

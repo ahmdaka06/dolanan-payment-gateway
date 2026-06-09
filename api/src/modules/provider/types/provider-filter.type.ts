@@ -1,4 +1,4 @@
-export interface ProviderFilter {
+export type ProviderFilter = {
     isActive?: boolean;
     code?: string;
 }

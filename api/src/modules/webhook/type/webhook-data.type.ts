@@ -1,4 +1,4 @@
-export interface WebhookData {
+export type WebhookData = {
     providerId: string;
     transactionId?: string;
     payload: any;
